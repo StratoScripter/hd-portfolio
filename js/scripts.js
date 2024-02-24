@@ -1,19 +1,11 @@
-/*!
-* Start Bootstrap - Freelancer v7.0.7 (https://startbootstrap.com/theme/freelancer)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
-*/
-//
-// Scripts
-// 
 // Use AWS SDK to fetch API token from Secrets Manager
 async function fetchAPIToken() {
     const secretName = "hd-portfolio"; // Replace with your secret name
-    const client = new SecretsManagerClient({ region: "ap-southeast-1" }); // Replace with your region
+    const client = new AWS.SecretsManager({ region: "ap-southeast-1" }); // Replace with your region
     let response;
 
     try {
-        response = await client.send(new GetSecretValueCommand({ SecretId: secretName, VersionStage: "AWSCURRENT" }));
+        response = await client.getSecretValue({ SecretId: secretName });
     } catch (error) {
         console.error("Error fetching API token:", error);
         return null;
