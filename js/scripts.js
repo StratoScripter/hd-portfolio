@@ -6,6 +6,29 @@
 //
 // Scripts
 // 
+// Use AWS SDK to fetch API token from Secrets Manager
+async function fetchAPIToken() {
+    const secretName = "hd-portfolio"; // Replace with your secret name
+    const client = new SecretsManagerClient({ region: "ap-southeast-1" }); // Replace with your region
+    let response;
+
+    try {
+        response = await client.send(new GetSecretValueCommand({ SecretId: secretName, VersionStage: "AWSCURRENT" }));
+    } catch (error) {
+        console.error("Error fetching API token:", error);
+        return null;
+    }
+
+    return response.SecretString;
+}
+
+// When the DOM is loaded, fetch API token and update the form
+document.addEventListener("DOMContentLoaded", async () => {
+    const apiToken = await fetchAPIToken();
+    if (apiToken) {
+        document.getElementById("accessKeyInput").value = apiToken; // Update access_key input field with API token
+    }
+});
 
 window.addEventListener('DOMContentLoaded', event => {
 
